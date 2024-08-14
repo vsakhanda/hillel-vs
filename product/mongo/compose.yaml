@@ -1,0 +1,35 @@
+services:
+  service:
+    build:
+      context: .
+      # dockerfile: deployments/${DCKR_ENV}/Dockerfile
+      # args:
+      #   DCKR_ENV_LOGIN: ${DCKR_ENV_LOGIN}
+      #   DCKR_ENV_PASSWORD: ${DCKR_ENV_PASSWORD}
+    ports:
+      - 8030:8030
+      # - 8031:8030 # uncomment if you want to make several instances
+      # - 8032:8030 # uncomment if you want to make several instances
+    environment:
+      - DB_HOST
+    depends_on:
+      - mongo
+    networks:
+      - backend
+
+  mongo:
+    image: mongo:6.0
+    container_name: 'mongo'
+    ports:
+      - 27018:27017
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mongo_data:
+    external: false

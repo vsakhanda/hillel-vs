@@ -1,0 +1,13 @@
+services:
+  server:
+    build:
+      context: .
+      target: final
+    ports:
+      - 8030:8030
+    networks: ["nats"]
+
+networks:
+  nats:
+    name: nats
+    external: true
