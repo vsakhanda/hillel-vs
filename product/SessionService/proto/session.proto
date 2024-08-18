@@ -15,14 +15,13 @@ message Session {
 }
 
 message AddSessionResponse {
+  string id = 1;
+  string Session = 2;
+  string Status = 3;
 }
 
 message GetSessionRequest {
   string id = 1;
-}
-
-message GetSessionResponse {
-  string Session = 1;
 }
 
 message DelSessionRequest {
