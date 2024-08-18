@@ -11,7 +11,7 @@
 services:
   todo-app:
     build:
-      context: ./app
+      context: ./aps
     depends_on:
       - todo-database
     environment:
@@ -23,8 +23,8 @@ services:
       watch:
         - path: ./app/package.json
           action: rebuild
-        - path: ./app
-          target: /usr/src/app
+        - path: ./aps
+          target: /usr/src/aps
           action: sync
 
   todo-database:

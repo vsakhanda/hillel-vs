@@ -25,26 +25,46 @@ func main() {
 	session := fmt.Sprint(time.Now().Unix())
 	data := []byte(session)
 
-	// Запит без відповіді
-	err = Publish(nc, UserSessionEvent.ToString(), data)
+	//Запити з відповідями
+	dataStr := []byte(`{"name":"Vlad", "age": "37", "user_id": "1" }`)
+	msg, err := nc.Request(UserSetEvent.ToString(), dataStr, nats.DefaultTimeout)
 	if err != nil {
-		log.Fatal("Publish error:", err)
+		log.Fatal("Get user error:", err)
+	} else {
+		log.Printf("Отримано інформацію про користувача: %s", string(msg.Data))
 	}
 
-	dataStr := []byte(`{"name":"Alex"}`)
+	dataStr1 := []byte(`{"name":"Vlad", "age": "36", "user_id": "1" }`)
+	msg, err = nc.Request(UserUpdateEvent.ToString(), dataStr1, nats.DefaultTimeout)
+	if err != nil {
+		log.Fatal("Get user error:", err)
+	} else {
+		log.Printf("Оновлено інформацію про користувача: %s", string(msg.Data))
+	}
 
 	// Відправка запиту та отримання відповіді
-	msg, err := nc.Request(UserStructEvent.ToString(), dataStr, nats.DefaultTimeout)
+
+	err = Publish(nc, UserGetEvent.ToString(), data)
 	if err != nil {
-		log.Fatal("Request error:", err)
-	} else {
-		log.Printf("Отримано відповідь: %s", string(msg.Data))
+		log.Fatal("Set user error:", err)
 	}
 
-	// jetStream
-	js := jetStream(nc)
-	jetStreamPublisher(js)
+	msg, err = nc.Request(UserDeleteEvent.ToString(), dataStr1, nats.DefaultTimeout)
+	if err != nil {
+		log.Fatal("Delete user error:", err)
+	} else {
+		log.Printf("Сесія користувача видалена %s", string(msg.Data))
+	}
+
 }
+
+//
+//func Publish(nc *nats.Conn, subject string, data []byte) error {
+//	msg := nats.NewMsg(subject)
+//	msg.Data = data
+//
+//	return nc.PublishMsg(msg)
+//}
 
 func Publish(nc *nats.Conn, subject string, data []byte) error {
 	msg := nats.NewMsg(subject)
