@@ -21,6 +21,11 @@ func (sub NatsSubject) ToString() string {
 
 // subjects
 const (
-	UserSessionEvent NatsSubject = "project.<environment>.authorization.user.session"
-	UserStructEvent  NatsSubject = "project.<environment>.authorization.user.struct"
+	UserSetEvent    NatsSubject = "project.<environment>.authorization.user.setData"
+	UserGetEvent    NatsSubject = "project.<environment>.authorization.user.getData"
+	UserUpdateEvent NatsSubject = "project.<environment>.authorization.user.updateData"
+	UserDeleteEvent NatsSubject = "project.<environment>.authorization.user.deleteData"
+
+	//UserSessionEvent NatsSubject = "project.<environment>.authorization.user.session"
+	//UserStructEvent  NatsSubject = "project.<environment>.authorization.user.struct"
 )

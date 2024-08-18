@@ -1,41 +1,27 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/engine/reference/builder/
+FROM golang:1.19
 
-ARG NODE_VERSION=19.5.0
+# Set destination for COPY
+WORKDIR /aps
 
-FROM node:${NODE_VERSION}-alpine
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Use production node environment by default.
-ENV NODE_ENV production
+# Copy the source code. Note the slash at the end, as explained in
+# https://docs.docker.com/reference/dockerfile/#copy
+COPY *.go ./
 
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o /cashe_docker
 
-WORKDIR /usr/src/app
+# Optional:
+# To bind to a TCP port, runtime parameters must be supplied to the docker command.
+# But we can document in the Dockerfile what ports
+# the application is going to listen on by default.
+# https://docs.docker.com/reference/dockerfile/#expose
+EXPOSE 8045
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.npm to speed up subsequent builds.
-# Leverage a bind mounts to package.json and package-lock.json to avoid having to copy them into
-# into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --include=dev
-
-# install nodemon for hot-reloading
-RUN npm install -g nodemon
-
-# Copy the rest of the source files into the image.
-COPY . .
-
-
-# Run the application as a non-root user.
-RUN  chown -R node /usr/src/app
-USER node
-
-# Expose the port that the application listens on.
-EXPOSE 3000
-
-# Run the application in dev mode to use with Compose watch feature
-CMD npm run dev
+# Run
+CMD ["/cashe_docker"]
