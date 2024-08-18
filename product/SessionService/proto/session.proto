@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto;
+option go_package = ".";
+
+service SessionService {
+  rpc AddSession (Session) returns (AddSessionResponse) ;
+  rpc GetSession (GetSessionRequest) returns (Session) ;
+  rpc DelSession (DelSessionRequest) returns (DelSessionResponse) ;
+}
+
+message Session {
+  string id = 1;
+  string Session = 2;
+}
+
+message AddSessionResponse {
+}
+
+message GetSessionRequest {
+  string id = 1;
+}
+
+message GetSessionResponse {
+  string Session = 1;
+}
+
+message DelSessionRequest {
+  string id = 1;
+}
+
+message DelSessionResponse {
+}
