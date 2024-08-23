@@ -1,0 +1,28 @@
+version: '3.0'
+
+services:
+  app:
+    build: ./app
+    ports:
+      - "8045:8045"
+    depends_on:
+      - redis
+      - mongo
+    environment:
+      - REDIS_HOST=redis
+      - MONGO_HOST=mongo
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
